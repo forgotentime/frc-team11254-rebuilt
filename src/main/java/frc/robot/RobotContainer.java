@@ -3,7 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-
+// imports (figure it out)
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+  //define stuff
   private Shooter shooter;
   private XboxController operator;
   private JoystickButton shootButton;
@@ -36,17 +37,21 @@ public class RobotContainer {
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   private Command shootCommand;
-  private Command unstuckCommand;
+  private Command unstuckinator;
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  /** The container for the robot. Contains subsystems, OI devices, and commands. 
+   * here is where speeds are set as well as the controll devices assigned
+   * RIGHT bumper to shoot LEFT bumper to move motor in reverse
+  */
   public RobotContainer() {
     shooter = new Shooter();
     operator = new XboxController(1);
+    //fire
     shootButton = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
     shootCommand = Commands.runEnd(() -> shooter.PIDShoot(3000), () -> shooter.stop(),  shooter);
-
+    //if fuel gets stuck use this to reverse motor(left bumper)
     unstuckButton = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
-    unstuckCommand = Commands.runEnd(() -> shooter.PIDShoot(-3000), () -> shooter.stop(), shooter);
+    unstuckinator = Commands.runEnd(() -> shooter.PIDShoot(-500), () -> shooter.stop(), shooter);
     // Configure the trigger bindings
     configureBindings();
   }
@@ -61,6 +66,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    //Right bumper to shoot left bumper to reverse shooter motor.(/°W^)
     shootButton.whileTrue(shootCommand);
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
