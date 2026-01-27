@@ -33,16 +33,15 @@ public class TankDrive extends SubsystemBase {
   public TankDrive() {
     // This is creating and configuring the motors
     frontLeft = new SparkMax(FRONT_LEFT_MOTOR, MotorType.kBrushed); 
+    frontRight = new SparkMax(FRONT_RIGHT_MOTOR, MotorType.kBrushed);
     backLeft = new SparkMax(BACK_LEFT_MOTOR, MotorType.kBrushed);
     backRight = new SparkMax(BACK_RIGHT_MOTOR, MotorType.kBrushed);
-    frontRight = new SparkMax(FRONT_RIGHT_MOTOR, MotorType.kBrushed);
+    
     frontLeftConfig = new SparkMaxConfig();
     frontRightConfig = new SparkMaxConfig();
     backLeftConfig = new SparkMaxConfig();
     backRightConfig = new SparkMaxConfig();
     tankDrive = new DifferentialDrive(frontLeft, frontRight);
-      
-
 
     // Tells the motors how to stop and also inverts one wheel so they both spin the same direction
     frontLeftConfig

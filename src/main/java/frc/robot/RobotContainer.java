@@ -42,7 +42,7 @@ public class RobotContainer {
   private JoystickButton unstuckButton;
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  private final Intake intakeSubsystem = new Intake();
+  private final Intake intakeSubsystem;
   
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -66,8 +66,9 @@ public class RobotContainer {
    * RIGHT bumper to shoot LEFT bumper to move motor in reverse
   */
   public RobotContainer() {
-    spinIntake = Commands.run(() -> {intakeSubsystem.spinIntake(-0.4);}, intakeSubsystem);
-    outake = Commands.run(() -> {intakeSubsystem.spinIntake(0.4);}, intakeSubsystem);
+    intakeSubsystem = new Intake();
+    spinIntake = Commands.runEnd(() -> {intakeSubsystem.spinIntake(-0.4, -0.8);}, ()-> {intakeSubsystem.spinIntake(0,0);}, intakeSubsystem);
+    outake = Commands.runEnd(() -> {intakeSubsystem.spinIntake(0.4, 0.8);}, () -> {intakeSubsystem.spinIntake(0,0);}, intakeSubsystem);
 
     SmartDashboard.putData(intakeSubsystem);
 
@@ -77,6 +78,7 @@ public class RobotContainer {
     outakeButton = new JoystickButton(operator, XboxController.Button.kB.value);
 
     drive = new TankDrive();
+    
     // Runs the command continuously to drive with joystick
     driveWithJoystick = Commands.run(() -> drive.joystickDrive(driver), drive);
 
@@ -87,10 +89,10 @@ public class RobotContainer {
     //if fuel gets stuck use this to reverse motor(left bumper)
     unstuckButton = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
     unstuckinator = Commands.runEnd(() -> intakeSubsystem.PIDShoot(500), () -> intakeSubsystem.stop(), intakeSubsystem);
+    
     // Configure the trigger bindings
+    drive.setDefaultCommand(driveWithJoystick);
     configureBindings();
-
-    // drive.setDefaultCommand(driveWithJoystick);
   }
   
 
@@ -104,8 +106,6 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    //Right bumper to shoot left bumper to reverse shooter motor.(/°W^)
-    shootButton.whileTrue(shootCommand);
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
