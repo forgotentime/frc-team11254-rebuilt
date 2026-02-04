@@ -34,32 +34,31 @@ import edu.wpi.first.wpilibj2.command.Commands;
 public class RobotContainer {
   //define stuff
   private TankDrive drive;
+  private Intake intakeSubsystem;
+  
   private XboxController driver;
-  private Command driveWithJoystick;
-
   private XboxController operator;
-  private JoystickButton shootButton;
-  private JoystickButton unstuckButton;
+
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  private final Intake intakeSubsystem;
-  
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
     // Setting the Xbox Controller to the driver port
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
-  private final Command spinIntake;
-  private final Command outake;
 
-  private final JoystickButton intakeButton;
-  private final JoystickButton outakeButton;
+  private JoystickButton intakeButton;
+  private JoystickButton outakeButton;
+  private JoystickButton shootButton;
+  private JoystickButton unstuckButton;
 
-
-
+  private Command driveWithJoystick;
+  private Command spinIntake;
+  private Command outake;
   private Command shootCommand;
   private Command unstuckinator;
   private Command shooterIntake;
+  
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. 
    * here is where speeds are set as well as the controll devices assigned
@@ -67,28 +66,25 @@ public class RobotContainer {
   */
   public RobotContainer() {
     intakeSubsystem = new Intake();
+    drive = new TankDrive();
+    
     spinIntake = Commands.runEnd(() -> {intakeSubsystem.spinIntake(-0.4, -0.8);}, ()-> {intakeSubsystem.spinIntake(0,0);}, intakeSubsystem);
     outake = Commands.runEnd(() -> {intakeSubsystem.spinIntake(0.4, 0.8);}, () -> {intakeSubsystem.spinIntake(0,0);}, intakeSubsystem);
+    shootCommand = Commands.runEnd(() -> intakeSubsystem.PIDShoot(-3000), () -> intakeSubsystem.stop(),  intakeSubsystem);
+    unstuckinator = Commands.runEnd(() -> intakeSubsystem.PIDShoot(500), () -> intakeSubsystem.stop(), intakeSubsystem);
+    driveWithJoystick = Commands.run(() -> drive.joystickDrive(driver), drive);
 
     SmartDashboard.putData(intakeSubsystem);
 
     driver = new XboxController(0);
     operator = new XboxController(1);
+    
     intakeButton = new JoystickButton(operator, XboxController.Button.kA.value);
     outakeButton = new JoystickButton(operator, XboxController.Button.kB.value);
-
-    drive = new TankDrive();
-    
-    // Runs the command continuously to drive with joystick
-    driveWithJoystick = Commands.run(() -> drive.joystickDrive(driver), drive);
-
-    //fire
+    unstuckButton = new JoystickButton(operator, XboxController.Button.kLeftBumper.value); //left bumper
     shootButton = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
-    shootCommand = Commands.runEnd(() -> intakeSubsystem.PIDShoot(-3000), () -> intakeSubsystem.stop(),  intakeSubsystem);
-    
-    //if fuel gets stuck use this to reverse motor(left bumper)
-    unstuckButton = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
-    unstuckinator = Commands.runEnd(() -> intakeSubsystem.PIDShoot(500), () -> intakeSubsystem.stop(), intakeSubsystem);
+
+    SmartDashboard.putData(drive);
     
     // Configure the trigger bindings
     drive.setDefaultCommand(driveWithJoystick);
@@ -109,9 +105,10 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
+    
     intakeButton.whileTrue(spinIntake); // a button
-
     outakeButton.whileTrue(outake); // b button
+    shootButton.whileTrue(shootCommand); //right bumper
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.

@@ -9,6 +9,8 @@ import frc.robot.Constants.OperatorConstants;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -56,6 +58,7 @@ public class TankDrive extends SubsystemBase {
     // Makes the back left and right wheels follow the front left and right
     backLeftConfig.apply(frontLeftConfig).follow(FRONT_LEFT_MOTOR);
     backRightConfig.apply(frontRightConfig).follow(FRONT_RIGHT_MOTOR);
+    
 
     frontLeft.configure(frontLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     frontRight.configure(frontRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -66,7 +69,7 @@ public class TankDrive extends SubsystemBase {
 
   /** Makes the robot drive with joystick */
   public void joystickDrive(XboxController driver){
-    tankDrive.arcadeDrive(MathUtil.applyDeadband(driver.getLeftY(), 0.05), MathUtil.applyDeadband(driver.getRightY(), 0.05));
+    tankDrive.arcadeDrive(MathUtil.applyDeadband(-driver.getLeftY(), 0.05), MathUtil.applyDeadband(-driver.getRightX(), 0.05));
   }
 
   /** Drive at a constant speed */
@@ -84,5 +87,20 @@ public class TankDrive extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public void initSendable(SendableBuilder builder) {
+    super.initSendable(builder);
+    builder.setSmartDashboardType("TankDrive");
+
+    builder.addDoubleProperty("FL Voltage", () -> frontLeft.getAppliedOutput() * RobotController.getBatteryVoltage(), null);
+    builder.addDoubleProperty("FR Voltage", () -> frontRight.getAppliedOutput() * RobotController.getBatteryVoltage(), null);
+    builder.addDoubleProperty("BL Voltage", () -> backLeft.getAppliedOutput() * RobotController.getBatteryVoltage(), null);
+    builder.addDoubleProperty("BR Voltage", () -> backRight.getAppliedOutput() * RobotController.getBatteryVoltage(), null);
+
+    builder.addDoubleProperty("FR Current", () -> frontRight.getOutputCurrent(), null);
+    builder.addDoubleProperty("FL Current", () -> frontLeft.getOutputCurrent(), null);
+    builder.addDoubleProperty("BR Current", () -> backRight.getOutputCurrent(), null);
+    builder.addDoubleProperty("BL Current", () -> backLeft.getOutputCurrent(), null);
   }
 }
