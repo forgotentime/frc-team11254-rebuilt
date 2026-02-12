@@ -69,12 +69,12 @@ public class TankDrive extends SubsystemBase {
 
   /** Makes the robot drive with joystick */
   public void joystickDrive(XboxController driver){
-    tankDrive.arcadeDrive(MathUtil.applyDeadband(-driver.getLeftY(), 0.05), MathUtil.applyDeadband(-driver.getRightX(), 0.05));
+    tankDrive.tankDrive(MathUtil.applyDeadband(-driver.getLeftY(), 0.05), MathUtil.applyDeadband(-driver.getRightY(), 0.05));
   }
 
-  /** Drive at a constant speed */
-  public void drive(){
-    tankDrive.arcadeDrive(0.3, 0);
+  /** Drive and rotate at the given speeds */
+  public void drive(double speed, double rotationSpeed){
+    tankDrive.arcadeDrive(speed, rotationSpeed);
   }
 
   /** Calls to stop the motors */
