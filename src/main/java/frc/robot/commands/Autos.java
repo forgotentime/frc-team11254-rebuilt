@@ -26,6 +26,30 @@ public final class Autos {
     );
   }
 
+  public static Command leftAuto(TankDrive drive, Intake shoot){
+    return Commands.sequence(
+      Commands.runEnd(() -> shoot.PIDShoot(3000), () -> shoot.stop(), shoot).withTimeout(8),
+      Commands.run(() -> drive.drive(0.5, -0.1)).withTimeout(0.5),
+      Commands.run(() -> drive.drive(-0.5, 0)).withTimeout(0.5),
+      Commands.run(() -> drive.drive(0.5, 0.2)).withTimeout(0.5),
+      Commands.run(() -> drive.drive(0.25, 0)).withTimeout(0.5),
+      Commands.run(() -> drive.drive(0.5, 0.2)).withTimeout(0.5),
+      Commands.run(() -> drive.drive(0.5, 0)).withTimeout(0.5)
+    );
+  }
+
+  public static Command rightAuto(TankDrive drive, Intake shoot){
+    return Commands.sequence(
+      Commands.runEnd(() -> shoot.PIDShoot(3000), () -> shoot.stop(), shoot).withTimeout(8),
+      Commands.run(() -> drive.drive(0.5, 0.1)).withTimeout(0.5),
+      Commands.run(() -> drive.drive(-0.5, 0)).withTimeout(0.5),
+      Commands.run(() -> drive.drive(0.5, -0.2)).withTimeout(0.5),
+      Commands.run(() -> drive.drive(0.25, 0)).withTimeout(0.5),
+      Commands.run(() -> drive.drive(0.5, -0.2)).withTimeout(0.5),
+      Commands.run(() -> drive.drive(0.5, 0)).withTimeout(0.5)
+    );
+  }
+
   private Autos() {
     throw new UnsupportedOperationException("This is a utility class!");
   }

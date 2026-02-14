@@ -35,7 +35,7 @@ public class TimedDrive extends Command {
   public void execute() {
     // Resets the timer to 0 when called and drives for a certain amount of time
     timer.reset();
-    drive.drive();
+    drive.drive(0, 0);
     timer.start();
   }
 
