@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import edu.wpi.first.wpilibj.XboxController;
@@ -115,6 +116,14 @@ public class Intake extends SubsystemBase {
 
   public void intakeMotorShooter(){
     feeder.set(.4);
+  }
+
+  public void spinShooter() {
+    intake.set(0.8);
+  }
+
+  public void spinFeeder() {
+    feeder.set(0.6);
   }
 
   public Command runSysID(){
