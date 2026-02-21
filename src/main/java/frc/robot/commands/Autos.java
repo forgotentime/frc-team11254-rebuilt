@@ -24,42 +24,20 @@ public final class Autos {
     return Commands.sequence(
       drive.timedDrive(0.4, 1),
       new ShootWithDelay(shoot)
-      // drive.timedDrive(0.4, 1)
     );
   }
 
   public static Command leftAuto(TankDrive drive, Intake shoot){
-    // return Commands.sequence(
-    //   Commands.runEnd(() -> shoot.PIDShoot(3000), () -> shoot.stop(), shoot).withTimeout(8),
-    //   Commands.run(() -> drive.drive(0.5, -0.1)).withTimeout(0.5),
-    //   Commands.run(() -> drive.drive(-0.5, 0)).withTimeout(0.5),
-    //   Commands.run(() -> drive.drive(0.5, 0.2)).withTimeout(0.5),
-    //   Commands.run(() -> drive.drive(0.25, 0)).withTimeout(0.5),
-    //   Commands.run(() -> drive.drive(0.5, 0.2)).withTimeout(0.5),
-    //   Commands.run(() -> drive.drive(0.5, 0)).withTimeout(0.5)
-      
-    // );
     return Commands.sequence(
       Commands.run(() -> drive.drive(0.4, -0.05), drive).withTimeout(1),
       new ShootWithDelay(shoot)
-      // drive.timedDrive(0.4, 1)
     );
   }
 
   public static Command rightAuto(TankDrive drive, Intake shoot){
-    // return Commands.sequence(
-    //   Commands.runEnd(() -> shoot.PIDShoot(3000), () -> shoot.stop(), shoot).withTimeout(8),
-    //   Commands.run(() -> drive.drive(0.5, 0.1)).withTimeout(0.5),
-    //   Commands.run(() -> drive.drive(-0.5, 0)).withTimeout(0.5),
-    //   Commands.run(() -> drive.drive(0.5, -0.2)).withTimeout(0.5),
-    //   Commands.run(() -> drive.drive(0.25, 0)).withTimeout(0.5),
-    //   Commands.run(() -> drive.drive(0.5, -0.2)).withTimeout(0.5),
-    //   Commands.run(() -> drive.drive(0.5, 0)).withTimeout(0.5)
-    // );
     return Commands.sequence(
       drive.timedDrive(0.4, .5),
       new ShootWithDelay(shoot)
-      // drive.timedDrive(0.4, 1)
     );
   }
 

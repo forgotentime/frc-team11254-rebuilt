@@ -133,23 +133,19 @@ public class Intake extends SubsystemBase {
       shooterSysID.dynamic(Direction.kForward).withTimeout(2),
       shooterSysID.dynamic(Direction.kReverse).withTimeout(2));
   }
-
-  public double getPosition(){
-    return encoder.getPosition();
-  }
-
+/**return shooter velocity*/
   public double getVelocity(){
     return encoder.getVelocity();
   }
-
+/**gets the voltage applied to the motor*/
   public double getVoltage(){
     return intake.getAppliedOutput()*intake.getBusVoltage();
   }
-
+/**stops the shoot motor*/
   public void intakeMotorShooterStop(){
     feeder.stopMotor();
   }
-
+/**applies the velocity constant to the spped value*/
   public void intakeWithPID(double speed){
     sparkControl.setSetpoint(speed, ControlType.kVelocity);
   }
@@ -158,7 +154,7 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
-
+/**elastic stuffs*/
   public void intitSendable(SendableBuilder builder){
     super.initSendable(builder);
     builder.addDoubleProperty("shooter velocity", () -> encoder.getVelocity(), null);
